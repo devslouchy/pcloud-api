@@ -1,22 +1,24 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-
-from app.db.database import (
-    SessionLocal,
-    engine, 
-    get_db
-)
+from sqlalchemy import text
+from app.db.database import SessionLocal, engine, get_db
 from app.models import Base, Item
+from app.db.init_db import wait_for_db
+
 
 app = FastAPI(
     title="Personal Cloud API",
-    version="0.2.0"
+    version="0.2.1"
 )
 
-from app.db.init_db import wait_for_db
-
 wait_for_db()
-Base.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+def startup():
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+       
+        Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
