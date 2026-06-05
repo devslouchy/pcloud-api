@@ -79,3 +79,18 @@ def delete_item(item_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "Item deleted"}
+    
+    
+    
+@app.put("/items/{item_id}")
+def replace_item(item_id: int, name:str, db: Session = Depends(get_db)):
+    item = db.query(Item).filter(Item.id == item_id).first()
+    
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+        
+    item.name = name
+    db.commit()
+    db.refresh(item)
+        
+    return {"message": "Item updated"}
