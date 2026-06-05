@@ -36,6 +36,7 @@ GET /items
 POST /items
 GET /items/{item_id}
 DELETE /items{item_id}
+UPDATE /items/{item_id}
 
 
 This was all completely new to me. I've done some basic scripting, this is very much a 1st draft. 
